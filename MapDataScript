@@ -1,0 +1,107 @@
+/*This is a simple DB script slapped together for the game app im working on.
+This simply contains some 'territory' info as well as some faction ownership data*/
+
+USE master
+GO
+DROP database MapData
+
+GO
+CREATE DATABASE MapData
+
+GO
+USE MapData
+
+/*Create a few tables*/
+GO
+CREATE TABLE dbo.[Faction](
+	[FactionID] int IDENTITY PRIMARY KEY NOT NULL,
+	[FactionName] varchar(70) NOT NULL,
+)
+
+CREATE TABLE dbo.[Territory](
+	[Id] int IDENTITY PRIMARY KEY NOT NULL,
+	[TerrName] varchar(40) NOT NULL,
+	[OwnerID] int NOT NULL,
+	CONSTRAINT OwnerID FOREIGN KEY(
+		[OwnerID]
+	)REFERENCES [Faction](
+		[FactionID]
+	)
+)
+
+CREATE TABLE dbo.[Troops]( -- not yet used
+	[TroopID] int IDENTITY PRIMARY KEY NOT NULL,
+)
+
+/*populate the db*/
+INSERT INTO [Faction] VALUES('Neutral')
+INSERT INTO [Faction] VALUES('Team 1')
+INSERT INTO [Faction] VALUES('Group 2')
+INSERT INTO [Faction] VALUES('Player 3')
+
+/*Bunch of territores*/
+DECLARE @i int = 0
+WHILE @i < 21
+BEGIN
+	INSERT INTO [Territory] VALUES(CONCAT('T ', @i), 1)
+	SET @i = @i + 1
+END
+
+SELECT *
+FROM Territory 
+RIGHT JOIN Faction ON OwnerID = FactionID
+
+/*stored procedures*/
+GO
+--All territories
+CREATE PROCEDURE AllTerritories AS
+SELECT *
+FROM Territory
+
+GO
+--All factions
+CREATE PROCEDURE AllFactions AS
+SELECT *
+FROM Faction
+
+GO
+
+--All faction ownership
+CREATE PROCEDURE TrtOwners AS
+SELECT TerrName, FactionName
+FROM Territory
+LEFT JOIN Faction ON OwnerID = FactionID
+WHERE TerrID = FactionID
+
+GO
+
+--individual territory by name
+CREATE PROCEDURE GetTerritory
+	@NameArg varchar(40)
+AS
+SELECT TerrID
+FROM Territory
+WHERE TerrName = @NameArg
+
+GO
+
+--individual faction id by name
+CREATE PROCEDURE GetFaction
+	@NameArg varchar(40)
+AS
+SELECT FactionID
+FROM Faction
+WHERE FactionName = @NameArg
+
+GO
+
+--update territory owner
+CREATE PROCEDURE UpdateOwner
+	@NameArg varchar(40),
+	@OwnerArg int
+AS
+UPDATE Territory
+SET OwnerID = @OwnerArg 
+WHERE TerrName = @NameArg
+
+GO
