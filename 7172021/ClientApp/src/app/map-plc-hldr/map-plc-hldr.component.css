@@ -1,0 +1,23 @@
+.faction1 {/*neutral territory*/
+  color:grey;
+}
+
+.faction2 {
+  color: blue;
+}
+
+.faction3 {
+  color: green;
+}
+
+.faction4 {
+  color: red;
+}
+
+.faction5 {
+  color: yellow;
+}
+
+.faction6 {
+  color: purple;
+}

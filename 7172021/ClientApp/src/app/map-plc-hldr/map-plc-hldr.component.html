@@ -1,0 +1,28 @@
+<div class="container-fluid bg-light d-flex flex-column" style="height: 100vh; margin-top:0px; padding:0px; background-size:cover;">
+  <p *ngIf="!territories"><em>Loading...</em></p>
+
+  <div class="row" style="width:100vw; height:100vh;">
+    <div class="col-3 bg-secondary text-light">
+      <app-map-sidebar
+            [nameInput] = "tNameInput"
+            [ownerInput] = "tOwnerInput"
+            [idInput] ="tTerrId"
+            (updateMap) ="updateData($event)">                     
+      </app-map-sidebar>
+    </div>
+
+    <div  class="col-9 bg-dark text-light" (click)="clearData()"> 
+      <div #map_holder *ngFor="let t of territories" >
+        <button (click)="displayData(t.terrID)" #Territory{{t.terrID}}
+                [ngClass] = "{'faction1' : t.ownerID == 1,
+                'faction2' : t.ownerID == 2,
+                'faction3' : t.ownerID == 3,
+                'faction4' : t.ownerID == 4,
+                'faction5' : t.ownerID == 5,
+                'faction6' : t.ownerID == 6}"
+                >{{t.terrName}}</button>
+      </div>
+
+    </div>
+  </div>
+</div>
